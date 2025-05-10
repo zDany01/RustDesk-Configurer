@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35931.197 d17.13
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RustDesk Configurer", "RustDesk Configurer.csproj", "{63C223F8-2375-4D75-9932-B88E425D961E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{63C223F8-2375-4D75-9932-B88E425D961E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{63C223F8-2375-4D75-9932-B88E425D961E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{63C223F8-2375-4D75-9932-B88E425D961E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{63C223F8-2375-4D75-9932-B88E425D961E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B2747833-6D9D-4F43-B7B6-D8C3C00C3018}
+	EndGlobalSection
+EndGlobal

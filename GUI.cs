@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Text.Json;
 using System.Net;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -14,6 +15,8 @@ using RustDesk_Configurer.Properties;
 using System.Diagnostics;
 using System.Collections.Specialized;
 using System.Runtime.CompilerServices;
+using System.Net.Http.Headers;
+using System.Reflection;
 
 namespace RustDesk_Configurer
 {
@@ -24,8 +27,11 @@ namespace RustDesk_Configurer
         private const string SERVER_UNKNOWN = "Offline";
         private const string REPAIR_TEXT = "Repair";
         #endregion
-        private string[] serverData;
-        
+        private const string RUSTDESK_GH_API_ENDPOINT = "https://api.github.com/repos/rustdesk/rustdesk/releases/latest";
+        private readonly HttpClient httpClient = new HttpClient();
+        private readonly string rsPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "RustDesk", "rustdesk.exe");
+        private string configString;
+
 
         public GUI()
         {
@@ -35,20 +41,19 @@ namespace RustDesk_Configurer
             this.installBtn.Click += ApplySettings;
         }
 
-        private async Task<string[]> GetServerData()
+        private async Task<string> GetServerData()
         {
-            HttpClient requester = new HttpClient();
             HttpResponseMessage serverData;
             while (true)
             {
                 try
                 {
-                    serverData = await requester.GetAsync(Resources.SERVER_ENDPOINT_URL);
+                    serverData = await httpClient.GetAsync(Resources.SERVER_ENDPOINT_URL);
                     if (serverData.IsSuccessStatusCode)
                     {
                         statusLbl.Text = SERVER_CONNECTED;
                         statusLbl.ForeColor = Color.Green;
-                        return (await serverData.Content.ReadAsStringAsync()).Split();
+                        return await serverData.Content.ReadAsStringAsync();
                     }
                     else throw new HttpRequestException();
                 }
@@ -59,10 +64,29 @@ namespace RustDesk_Configurer
                     if (MessageBox.Show("There was an error contacting the server\nWould you like to try again?", Program.APP_NAME, MessageBoxButtons.RetryCancel, MessageBoxIcon.Question) == DialogResult.Cancel)
                     {
                         if (MessageBox.Show("Would you like to use preconfigured server data?\nRemember that these could be obsolete!", Program.APP_NAME, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No) Application.Exit();
-                        return new string[] { Resources.DEFAULT_RELAY_ID, Resources.DEFAULT_RELAY_ADDRESS, string.Empty, Resources.DEFAULT_RELAY_KEY };
+                        return Resources.DEFAULT_CONFIG_STRING;
                     }
                 }
             }
+        }
+        private uint GetVersionValue(string semver)
+        {
+            if (semver is null) return 0;
+
+            uint result = 0;
+            string[] versions = semver.Split('.').Take(3).Reverse().ToArray();
+            for (int i = 0, j = 1; i < versions.Length; i++, j *= 10)
+            {
+                uint temp;
+                if (!uint.TryParse(versions[i], out temp)) throw new FormatException("String version not formatted correctly.");
+                result += (uint)(temp * j);
+            }
+            return result;
+        }
+        private void WaitForInstall(Process installer)
+        {
+            installer.WaitForExit();
+            foreach (Process p in Process.GetProcessesByName("rustdesk")) p.WaitForExit();
         }
 
 
@@ -70,17 +94,66 @@ namespace RustDesk_Configurer
         {
             if (MessageBox.Show("By using this software you accept the RustDesk License Terms", Program.APP_NAME, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No) Environment.Exit(1);
 
-            if (File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "RustDesk", "rustdesk.exe"))) installBtn.Text = REPAIR_TEXT;
-            serverData = await GetServerData();
+            if (File.Exists(rsPath)) installBtn.Text = REPAIR_TEXT;
+            configString = await GetServerData();
             installBtn.Enabled = true;
         }
-        private void ApplySettings(object sender, EventArgs e)
+        private async void ApplySettings(object sender, EventArgs e)
         {
+            installBtn.Enabled = false;
+            HttpRequestMessage ghAPIRequest = new HttpRequestMessage(HttpMethod.Get, RUSTDESK_GH_API_ENDPOINT);
+            HttpRequestHeaders requestHeaders = ghAPIRequest.Headers;
+            requestHeaders.Accept.ParseAdd("application/vnd.github+json");
+            requestHeaders.UserAgent.Add(new ProductInfoHeaderValue("DotNet-APP", null));
+            requestHeaders.Add("X-GitHub-Api-Version", "2022-11-28");
+
+            JsonElement releaseData = JsonDocument.Parse((await httpClient.SendAsync(ghAPIRequest)).Content.ReadAsStreamAsync().Result).RootElement;
+            uint rsLastVer = GetVersionValue(releaseData.GetProperty("tag_name").GetString());
+            string rsDwnLink = null;
+            foreach (JsonElement releaseBin in releaseData.GetProperty("assets").EnumerateArray())
+            {
+                if (releaseBin.GetProperty("name").GetString().EndsWith("64.exe"))
+                {
+                    rsDwnLink = releaseBin.GetProperty("browser_download_url").GetString();
+                    break;
+                }
+            }
+            if (rsDwnLink is null) throw new FileNotFoundException("Unable to find the latest windows release");
+
+            uint rsCurrentVer = 0;
             if (object.ReferenceEquals(installBtn.Text, REPAIR_TEXT))
             {
-                throw new NotImplementedException("Check for update and install config");
+                string prodVer = FileVersionInfo.GetVersionInfo(rsPath).ProductVersion;
+                rsCurrentVer = GetVersionValue(prodVer.Substring(0, prodVer.IndexOf('+')));
             }
-            throw new NotImplementedException("Install RustDesk and config");
+
+
+            if (rsLastVer > rsCurrentVer)
+            {
+                Process.Start("net", "stop ruskdesk").WaitForExit();
+                foreach (Process p in Process.GetProcessesByName("rustdesk")) p.Kill();
+
+                string tmpDwn = Path.GetTempFileName();
+                File.WriteAllBytes(tmpDwn, await httpClient.GetByteArrayAsync(rsDwnLink));
+                string exeTmp = tmpDwn.Replace(".tmp", ".exe");
+                File.Move(tmpDwn, exeTmp);
+
+                Process rsInstaller = new Process
+                {
+                    StartInfo = new ProcessStartInfo
+                    {
+                        FileName = exeTmp,
+                        Arguments = "--silent-install",
+                        CreateNoWindow = true
+                    }
+                };
+                rsInstaller.Start();
+                await Task.Run(() => WaitForInstall(rsInstaller));
+                File.Delete(exeTmp);
+                MessageBox.Show("Installation Done", Program.APP_NAME, MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+
+            installBtn.Enabled = true;
         }
     }
 }

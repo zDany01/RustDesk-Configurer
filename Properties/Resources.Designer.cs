@@ -63,27 +63,9 @@ namespace RustDesk_Configurer.Properties {
         /// <summary>
         ///   Looks up a localized string similar to bassvr.eu.
         /// </summary>
-        internal static string DEFAULT_RELAY_ADDRESS {
+        internal static string DEFAULT_CONFIG_STRING {
             get {
-                return ResourceManager.GetString("DEFAULT_RELAY_ADDRESS", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to bassvr.eu.
-        /// </summary>
-        internal static string DEFAULT_RELAY_ID {
-            get {
-                return ResourceManager.GetString("DEFAULT_RELAY_ID", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to UtOWRgtdkU593K4Azdwervt8VR0LHVc1l4Z5CYUwzlE=.
-        /// </summary>
-        internal static string DEFAULT_RELAY_KEY {
-            get {
-                return ResourceManager.GetString("DEFAULT_RELAY_KEY", resourceCulture);
+                return ResourceManager.GetString("DEFAULT_CONFIG_STRING", resourceCulture);
             }
         }
         

@@ -117,14 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="DEFAULT_RELAY_ADDRESS" xml:space="preserve">
+  <data name="DEFAULT_CONFIG_STRING" xml:space="preserve">
     <value>bassvr.eu</value>
-  </data>
-  <data name="DEFAULT_RELAY_ID" xml:space="preserve">
-    <value>bassvr.eu</value>
-  </data>
-  <data name="DEFAULT_RELAY_KEY" xml:space="preserve">
-    <value>UtOWRgtdkU593K4Azdwervt8VR0LHVc1l4Z5CYUwzlE=</value>
+    <comment>9JSPFxme3VVWDVjW0wWMjZFSMBjUWhDd2JXZ3RmeBRzSzkTNVtGZ0dmUX9EdVJiOikXZrJCLiIiOikGchJCLiUXZuIndzNXYiJiOikXYsVmciwiI1VmLyZ3czFmYiojI0N3boJye</comment>
   </data>
   <data name="SERVER_ENDPOINT_URL" xml:space="preserve">
     <value>https://data.bassvr.eu/rustdesk</value>

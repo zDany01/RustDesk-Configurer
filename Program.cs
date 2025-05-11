@@ -8,6 +8,7 @@ namespace RustDesk_Configurer
 {
     internal static class Program
     {
+        public const string APP_NAME = "RustDesk Configurer";
         /// <summary>
         /// The main entry point for the application.
         /// </summary>

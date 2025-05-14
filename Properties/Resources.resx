@@ -118,8 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="DEFAULT_CONFIG_STRING" xml:space="preserve">
-    <value>bassvr.eu</value>
-    <comment>9JSPFxme3VVWDVjW0wWMjZFSMBjUWhDd2JXZ3RmeBRzSzkTNVtGZ0dmUX9EdVJiOikXZrJCLiIiOikGchJCLiUXZuIndzNXYiJiOikXYsVmciwiI1VmLyZ3czFmYiojI0N3boJye</comment>
+    <value>9JSPFxme3VVWDVjW0wWMjZFSMBjUWhDd2JXZ3RmeBRzSzkTNVtGZ0dmUX9EdVJiOikXZrJCLiIiOikGchJCLiUXZuIndzNXYiJiOikXYsVmciwiI1VmLyZ3czFmYiojI0N3boJye</value>
   </data>
   <data name="SERVER_ENDPOINT_URL" xml:space="preserve">
     <value>https://data.bassvr.eu/rustdesk</value>

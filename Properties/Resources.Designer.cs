@@ -61,7 +61,7 @@ namespace RustDesk_Configurer.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to bassvr.eu.
+        ///   Looks up a localized string similar to 9JSPFxme3VVWDVjW0wWMjZFSMBjUWhDd2JXZ3RmeBRzSzkTNVtGZ0dmUX9EdVJiOikXZrJCLiIiOikGchJCLiUXZuIndzNXYiJiOikXYsVmciwiI1VmLyZ3czFmYiojI0N3boJye.
         /// </summary>
         internal static string DEFAULT_CONFIG_STRING {
             get {

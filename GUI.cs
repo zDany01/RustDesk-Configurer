@@ -83,7 +83,7 @@ namespace RustDesk_Configurer
             }
             return result;
         }
-        private void WaitForInstall(Process installer)
+        private void WaitForRustDesk(Process installer)
         {
             installer.WaitForExit();
             foreach (Process p in Process.GetProcessesByName("rustdesk")) p.WaitForExit();
@@ -148,11 +148,30 @@ namespace RustDesk_Configurer
                     }
                 };
                 rsInstaller.Start();
-                await Task.Run(() => WaitForInstall(rsInstaller));
+                await Task.Run(() => WaitForRustDesk(rsInstaller));
                 File.Delete(exeTmp);
-                MessageBox.Show("Installation Done", Program.APP_NAME, MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
 
+            if (!File.Exists(rsPath))
+            {
+                MessageBox.Show("There was an error while installing the service\nPlease make sure the application is run under admin rights", Program.APP_NAME, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Application.Exit();
+            }
+
+            Process rsConfig = new Process
+            {
+                StartInfo = new ProcessStartInfo
+                {
+                    FileName = rsPath,
+                    Arguments = $"--config {configString}",
+                    UseShellExecute = true,
+                    CreateNoWindow = true
+                }
+            };
+
+            rsConfig.Start();
+            await Task.Run(() => WaitForRustDesk(rsConfig));
+            MessageBox.Show("Installation Done", Program.APP_NAME, MessageBoxButtons.OK, MessageBoxIcon.Information);
             installBtn.Enabled = true;
         }
     }

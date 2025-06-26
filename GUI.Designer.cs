@@ -31,12 +31,13 @@
             this.installBtn = new System.Windows.Forms.Button();
             this.descLbl = new System.Windows.Forms.Label();
             this.statusLbl = new System.Windows.Forms.Label();
+            this.statusPbr = new System.Windows.Forms.ProgressBar();
             this.SuspendLayout();
             // 
             // installBtn
             // 
             this.installBtn.Enabled = false;
-            this.installBtn.Location = new System.Drawing.Point(12, 41);
+            this.installBtn.Location = new System.Drawing.Point(12, 75);
             this.installBtn.Name = "installBtn";
             this.installBtn.Size = new System.Drawing.Size(222, 32);
             this.installBtn.TabIndex = 0;
@@ -64,11 +65,19 @@
             this.statusLbl.Text = "Checking...";
             this.statusLbl.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
+            // statusPbr
+            // 
+            this.statusPbr.Location = new System.Drawing.Point(14, 46);
+            this.statusPbr.Name = "statusPbr";
+            this.statusPbr.Size = new System.Drawing.Size(220, 23);
+            this.statusPbr.TabIndex = 3;
+            // 
             // GUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(246, 85);
+            this.ClientSize = new System.Drawing.Size(246, 119);
+            this.Controls.Add(this.statusPbr);
             this.Controls.Add(this.statusLbl);
             this.Controls.Add(this.descLbl);
             this.Controls.Add(this.installBtn);
@@ -85,6 +94,7 @@
         private System.Windows.Forms.Button installBtn;
         private System.Windows.Forms.Label descLbl;
         private System.Windows.Forms.Label statusLbl;
+        private System.Windows.Forms.ProgressBar statusPbr;
     }
 }
 

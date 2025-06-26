@@ -101,6 +101,7 @@ namespace RustDesk_Configurer
         private async void ApplySettings(object sender, EventArgs e)
         {
             installBtn.Enabled = false;
+            statusPbr.Style = ProgressBarStyle.Marquee;
             HttpRequestMessage ghAPIRequest = new HttpRequestMessage(HttpMethod.Get, RUSTDESK_GH_API_ENDPOINT);
             HttpRequestHeaders requestHeaders = ghAPIRequest.Headers;
             requestHeaders.Accept.ParseAdd("application/vnd.github+json");
@@ -158,6 +159,8 @@ namespace RustDesk_Configurer
                 Application.Exit();
             }
 
+            foreach (Process p in Process.GetProcessesByName("rustdesk")) p.Kill();
+
             Process rsConfig = new Process
             {
                 StartInfo = new ProcessStartInfo
@@ -171,8 +174,10 @@ namespace RustDesk_Configurer
 
             rsConfig.Start();
             await Task.Run(() => WaitForRustDesk(rsConfig));
+            statusPbr.Value = 100;
+            statusPbr.Style = ProgressBarStyle.Continuous;
             MessageBox.Show("Installation Done", Program.APP_NAME, MessageBoxButtons.OK, MessageBoxIcon.Information);
-            installBtn.Enabled = true;
+            Application.Exit();
         }
     }
 }
